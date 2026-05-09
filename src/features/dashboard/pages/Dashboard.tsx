@@ -1,6 +1,4 @@
 import {
-  Bell,
-  Search,
   Users,
   Calendar,
   DollarSign,
@@ -132,13 +130,13 @@ export default function Dashboard() {
 
           <div className="flex gap-3">
             <button className="px-5 py-3 bg-white rounded-2xl shadow-sm  hover:shadow-md transition flex items-center gap-2">
-              <Download size={18} className="text-blue-600" />
+              <Download size={18} className="text-emerald-600" />
               <span className="font-medium text-gray-700">
                 Export Report
               </span>
             </button>
 
-            <button className="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl shadow-lg hover:scale-[1.02] transition">
+            <button className="px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl shadow-lg hover:scale-[1.02] transition">
               + Add Patient
             </button>
 
@@ -153,14 +151,14 @@ export default function Dashboard() {
               title: "Today's Total Patients",
               value: "12,845",
               icon: Users,
-              color: "from-blue-500 to-indigo-600",
+              color: "from-emerald-400 to-green-500",
               growth: "+18%",
             },
             {
               title: "Today's Appointments",
               value: "1,245",
               icon: Calendar,
-              color: "from-purple-500 to-violet-600",
+              color: "from-teal-400 to-emerald-500",
               growth: "+12%",
             },
             {
@@ -174,7 +172,7 @@ export default function Dashboard() {
               title: "Today's Available Beds",
               value: "124",
               icon: BedDouble,
-              color: "from-orange-500 to-red-500",
+              color: "from-lime-400 to-green-500",
               growth: "-5%",
             },
           ].map((card, i) => {
@@ -258,7 +256,7 @@ export default function Dashboard() {
               </p>
             </div>
 
-            <button className="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 text-sm">
+            <button className="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 text-sm">
               View All
             </button>
 
@@ -301,14 +299,14 @@ export default function Dashboard() {
 
                   <tr
                     key={i}
-                    className="border-t border-gray-100 hover:bg-blue-50/40 transition"
+                    className="border-t border-gray-100 hover:bg-emerald-50/40 transition"
                   >
 
                     <td className="px-6 py-5">
 
                       <div className="flex items-center gap-3">
 
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg">
                           <UserRound size={20} />
                         </div>
 
@@ -397,8 +395,8 @@ export default function Dashboard() {
 
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563EB" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
 
@@ -408,7 +406,6 @@ export default function Dashboard() {
                     tickLine={false}
                     tick={{ fontSize: 12 }}
                   />
-
                   <Tooltip
                     contentStyle={{
                       borderRadius: "16px",
@@ -416,16 +413,12 @@ export default function Dashboard() {
                       boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
                     }}
                     formatter={(value: any) => [`₹${value}`, "Revenue"]}
-                    labelFormatter={(label, payload) => {
-                      const item = payload?.[0]?.payload;
-                      return `${label}`;
-                    }}
                   />
 
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#2563EB"
+                    stroke="#10B981"
                     fillOpacity={1}
                     fill="url(#colorRevenue)"
                     strokeWidth={4}

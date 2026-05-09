@@ -28,7 +28,7 @@ export default function Navbar() {
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-3 rounded-2xl shadow-lg hover:scale-[1.02] transition">
+        <button className="flex items-center gap-2 text-black px-5 py-3 rounded-2xl shadow-lg hover:scale-[1.02] transition">
           {/* <BrainCircuit size={18} /> */}
           AI Assistant
         </button>

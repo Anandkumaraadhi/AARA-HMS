@@ -3,7 +3,6 @@ import {
   Activity,
   CalendarDays,
   ClipboardList,
-  Droplets,
   Eye,
   FileText,
   HeartPulse,
