@@ -13,7 +13,7 @@ export default function Navbar() {
           className="absolute left-4 top-3.5 text-gray-400"
           size={18}
         />
-
+{/* anand */}
         <input
           type="text"
           placeholder="Search patients, doctors, reports..."
