@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +15,6 @@ import {
 
 export default function Login() {
   const setAuth = useAuthStore((s) => s.setAuth);
-  const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");

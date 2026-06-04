@@ -156,30 +156,30 @@ AARA Diagnostic Services.
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    if (editingId) {
-      setAdmissions((current) =>
-        current.map((adm) => (adm.id === editingId ? { ...form, id: editingId } : adm))
-      );
-      // Wait, let's fix the variable setAdmissions to setReports!
-      setReports((current) =>
-        current.map((rep) => (rep.id === editingId ? { ...form, id: editingId } : rep))
-      );
-    } else {
-      setReports((current) => [
-        {
-          ...form,
-          id: `LAB-${Date.now().toString().slice(-3)}`,
-        },
-        ...current,
-      ]);
-    }
+  if (editingId) {
+    setReports((current) =>
+      current.map((rep) =>
+        rep.id === editingId
+          ? { ...form, id: editingId }
+          : rep
+      )
+    );
+  } else {
+    setReports((current) => [
+      {
+        ...form,
+        id: `LAB-${Date.now().toString().slice(-3)}`,
+      },
+      ...current,
+    ]);
+  }
 
-    setIsModalOpen(false);
-    setForm(defaultForm);
-    setEditingId(null);
-  };
+  setIsModalOpen(false);
+  setForm(defaultForm);
+  setEditingId(null);
+};
 
   return (
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
