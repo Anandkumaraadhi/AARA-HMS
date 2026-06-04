@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   BarChart3,
   TrendingUp,
-  Users,
   DollarSign,
   Download,
   Calendar,
@@ -120,11 +119,10 @@ export default function ReportsPage() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 text-sm font-semibold transition border-b-2 -mb-[2px] ${
-              activeTab === tab
+            className={`px-6 py-3 text-sm font-semibold transition border-b-2 -mb-[2px] ${activeTab === tab
                 ? "border-emerald-600 text-emerald-700"
                 : "border-transparent text-gray-500 hover:text-gray-900"
-            }`}
+              }`}
           >
             {tab} Reports
           </button>
@@ -204,7 +202,7 @@ export default function ReportsPage() {
                   </defs>
                   <XAxis dataKey="month" stroke="#9CA3AF" fontSize={12} />
                   <YAxis stroke="#9CA3AF" fontSize={12} />
-                  <Tooltip formatter={(value) => `₹${value.toLocaleString("en-IN")}`} />
+                  {/* <Tooltip formatter={(value) => `₹${value.toLocaleString("en-IN")}`} /> */}
                   <Area
                     type="monotone"
                     dataKey="revenue"
@@ -316,8 +314,11 @@ export default function ReportsPage() {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {patientDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        {patientDistribution.map((_, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
                         ))}
                       </Pie>
                       <Tooltip />

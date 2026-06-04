@@ -2,13 +2,11 @@ import { useState, useMemo, ChangeEvent, FormEvent } from "react";
 import {
   Search,
   Plus,
-  Calendar,
   User,
   X,
   UserCheck,
   Bed,
   CheckCircle,
-  Clock,
   ArrowRightLeft,
 } from "lucide-react";
 
