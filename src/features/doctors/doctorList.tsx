@@ -21,10 +21,12 @@ type DoctorStatus = "Active" | "Inactive";
 type Doctor = {
   id: number;
   name: string;
+  department: string;
   specialty: string;
+  qualification: string;
+  experience: string;
   phone: string;
   email: string;
-  experience: string;
   fee: string;
   availability: string;
   location: string;
@@ -47,18 +49,6 @@ const doctorSpecialties = [
 
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const defaultForm: DoctorForm = {
-  name: "",
-  specialty: "General Dentist",
-  phone: "",
-  email: "",
-  experience: "",
-  fee: "",
-  availability: "Mon, Tue, Wed, Thu, Fri",
-  location: "",
-  image: "",
-  status: "Active",
-};
 
 const getAvailabilityDays = (availability: string) => {
   if (availability === "Mon - Fri") return ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -73,13 +63,30 @@ const getAvailabilityDays = (availability: string) => {
     .filter(Boolean);
 };
 
+const defaultForm: DoctorForm = {
+  name: "",
+  department: "Dental",
+  specialty: "General Dentist",
+  phone: "",
+  email: "",
+  qualification: "",
+  experience: "",
+  fee: "",
+  availability: "Mon, Tue, Wed, Thu, Fri",
+  location: "",
+  image: "",
+  status: "Active",
+};
+
 const initialDoctors: Doctor[] = [
   {
     id: 1,
     name: "Dr. Aditi Sharma",
+    department: "Dental",
     specialty: "Orthodontist",
     phone: "+91 98765 43210",
     email: "aditi.sharma@aara.com",
+    qualification: "MDS - Orthodontics",
     experience: "9 years",
     fee: "800",
     availability: "Mon - Fri",
@@ -91,9 +98,11 @@ const initialDoctors: Doctor[] = [
   {
     id: 2,
     name: "Dr. Rohan Mehta",
+    department: "Oral Surgery",
     specialty: "Dental Surgeon",
     phone: "+91 91234 56780",
     email: "rohan.mehta@aara.com",
+    qualification: "MDS - Orthodontics",
     experience: "12 years",
     fee: "1,200",
     availability: "Tue - Sat",
@@ -105,9 +114,11 @@ const initialDoctors: Doctor[] = [
   {
     id: 3,
     name: "Dr. Nisha Iyer",
+    department: "Endodontics",
     specialty: "Endodontist",
     phone: "+91 99887 76655",
     email: "nisha.iyer@aara.com",
+    qualification: "MDS - Orthodontics",
     experience: "7 years",
     fee: "950",
     availability: "Mon - Thu",
@@ -133,6 +144,7 @@ export default function DoctorList() {
     return doctors.filter((doctor) =>
       [
         doctor.name,
+        doctor.department,
         doctor.specialty,
         doctor.email,
         doctor.phone,
@@ -247,7 +259,7 @@ export default function DoctorList() {
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             AARA Team
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-gray-950">
@@ -261,7 +273,7 @@ export default function DoctorList() {
         <button
           type="button"
           onClick={openAddModal}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700"
+          className="inline-flex h-11 items-center justify-center gap-2 px-5 py-3 button-gradient text-white rounded-2xl hover:scale-[1.02] transition"
         >
           <Plus size={18} />
           Add Doctor
@@ -274,7 +286,7 @@ export default function DoctorList() {
             label: "Total Doctors",
             value: doctors.length,
             icon: UserRound,
-            color: "bg-blue-100 text-blue-700",
+            color: "bg-blue-100 text-green-700",
           },
           {
             label: "Specialists",
@@ -347,11 +359,14 @@ export default function DoctorList() {
                 <thead>
                   <tr className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                     <th className="px-5 py-4">Doctor</th>
+                    <th className="px-5 py-4">Department</th>
                     <th className="px-5 py-4">Specialty</th>
-                    <th className="px-5 py-4">Contact</th>
+                    <th className="px-5 py-4">Contact Details</th>
+                    <th className="px-5 py-4">Qualification</th>
+                    <th className="px-5 py-4">Experience</th>
                     <th className="px-5 py-4">Availability</th>
                     <th className="px-5 py-4">Location</th>
-                    <th className="px-5 py-4">Fee</th>
+                    <th className="px-5 py-4">Consultation Fee</th>
                     <th className="px-5 py-4">Status</th>
                     <th className="px-5 py-4 text-right">Actions</th>
                   </tr>
@@ -362,6 +377,7 @@ export default function DoctorList() {
                       key={doctor.id}
                       className="transition hover:bg-blue-50/50"
                     >
+                      {/* Doctor */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <img
@@ -369,22 +385,32 @@ export default function DoctorList() {
                             alt={doctor.name}
                             className="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-sm"
                           />
+
                           <div className="min-w-0">
                             <p className="truncate text-sm font-semibold text-gray-950">
                               {doctor.name}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">
-                              {doctor.experience} experience
-                            </p>
                           </div>
                         </div>
                       </td>
+
+               
                       <td className="px-5 py-4">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                        <span className="inline-flex rounded-full bg-green-50 px-3 py-1.5 text-xs font-semibold text-indigo-700">
+                          {doctor.department}
+                        </span>
+                      </td>
+                             {/* Specialty */}
+                      <td className="px-5 py-4">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700">
                           <BriefcaseMedical size={14} />
                           {doctor.specialty}
                         </span>
+
+
                       </td>
+
+                      {/* Phone */}
                       <td className="px-5 py-4">
                         <div className="space-y-1.5 text-sm text-gray-600">
                           <span className="flex items-center gap-2">
@@ -401,43 +427,65 @@ export default function DoctorList() {
                         </div>
                       </td>
                       <td className="px-5 py-4">
+                        <span className="text-sm font-medium text-gray-700">
+                          {doctor.qualification}
+                        </span>
+                      </td>
+
+                      {/* Experience */}
+                      <td className="px-5 py-4">
+                        <span className="inline-flex items-center rounded-lg bg-purple-50 px-3 py-1.5 text-sm font-medium text-purple-700">
+                          {doctor.experience}
+                        </span>
+                      </td>
+
+                      {/* Availability */}
+                      <td className="px-5 py-4">
                         <span className="inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700">
                           <CalendarDays size={15} className="text-gray-400" />
                           {doctor.availability}
                         </span>
                       </td>
+
+                      {/* Location */}
                       <td className="px-5 py-4">
                         <span className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
                           <MapPin size={15} className="text-gray-400" />
                           {doctor.location}
                         </span>
                       </td>
+
+                      {/* Fee */}
                       <td className="px-5 py-4">
                         <span className="text-sm font-semibold text-gray-950">
-                          Rs. {doctor.fee}
+                          ₹ {doctor.fee}
                         </span>
                       </td>
+
+                      {/* Status */}
                       <td className="px-5 py-4">
                         <span
-                          className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${
-                            doctor.status === "Active"
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
+                          className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${doctor.status === "Active"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-gray-100 text-gray-600"
+                            }`}
                         >
                           {doctor.status}
                         </span>
                       </td>
+
+                      {/* Actions */}
                       <td className="px-5 py-4">
                         <div className="flex justify-end gap-2">
                           <button
                             type="button"
                             onClick={() => openEditModal(doctor)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 transition hover:bg-blue-100"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-yellow-100 bg-yellow-50 text-yellow-700 transition hover:bg-yellow-100"
                             aria-label={`Edit ${doctor.name}`}
                           >
                             <Edit size={16} />
                           </button>
+
                           <button
                             type="button"
                             onClick={() => handleDeleteDoctor(doctor.id)}
@@ -584,6 +632,22 @@ export default function DoctorList() {
 
                 <label className="space-y-1.5">
                   <span className="text-xs font-semibold text-gray-700">
+                    Qualification <span className="text-red-500">*</span>
+                  </span>
+
+                  <input
+                    required
+                    type="text"
+                    name="qualification"
+                    value={form.qualification}
+                    onChange={handleInputChange}
+                    placeholder="MDS - Orthodontics"
+                    className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  />
+                </label>
+
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-gray-700">
                     Specialty <span className="text-red-500">*</span>
                   </span>
                   <select
@@ -596,6 +660,28 @@ export default function DoctorList() {
                     {doctorSpecialties.map((specialty) => (
                       <option key={specialty}>{specialty}</option>
                     ))}
+                  </select>
+                </label>
+
+
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-gray-700">
+                    Department <span className="text-red-500">*</span>
+                  </span>
+
+                  <select
+                    required
+                    name="department"
+                    value={form.department}
+                    onChange={handleInputChange}
+                    className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  >
+                    <option value="Dental">Dental</option>
+                    <option value="Orthodontics">Orthodontics</option>
+                    <option value="Oral Surgery">Oral Surgery</option>
+                    <option value="Endodontics">Endodontics</option>
+                    <option value="Periodontics">Periodontics</option>
+                    <option value="Prosthodontics">Prosthodontics</option>
                   </select>
                 </label>
 
@@ -612,11 +698,10 @@ export default function DoctorList() {
                       return (
                         <label
                           key={day}
-                          className={`flex h-11 cursor-pointer items-center justify-center rounded-xl border px-3 text-sm font-semibold transition ${
-                            isSelected
-                              ? "border-blue-200 bg-blue-50 text-blue-700"
-                              : "border-gray-200 bg-gray-50 text-gray-600 hover:border-blue-200 hover:bg-blue-50"
-                          }`}
+                          className={`flex h-11 cursor-pointer items-center justify-center rounded-xl border px-3 text-sm font-semibold transition ${isSelected
+                            ? "border-blue-200 bg-blue-50 text-green-700"
+                            : "border-gray-200 bg-gray-50 text-gray-600 hover:border-blue-200 hover:bg-blue-50"
+                            }`}
                         >
                           <input
                             type="checkbox"

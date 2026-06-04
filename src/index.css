@@ -30,6 +30,67 @@
   /* SHADOW */
   --shadow-soft: 0 10px 30px rgba(16, 185, 129, 0.08);
 
+
+  --button-gradient: linear-gradient(to right,
+      #10B981,
+      #07998d);
+
+  --button-gradient-hover: linear-gradient(to right,
+      #059669,
+      #115E59);
+
+  /* =========================
+     BORDER RADIUS
+  ========================== */
+
+  --radius-xl: 16px;
+  --radius-2xl: 10px;
+  --radius-3xl: 24px;
+
+  /* =========================
+     TRANSITIONS
+  ========================== */
+
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+
+/* =========================
+   COMMON BUTTON CLASS
+========================== */
+
+.button-gradient {
+
+  background: var(--button-gradient);
+
+  color: #ffffff !important;
+
+  fill: #ffffff;
+
+  border-radius: var(--radius-2xl);
+
+  box-shadow: var(--shadow-button);
+
+  transition: var(--transition-normal);
+
+  border: none;
+}
+
+
+.button-gradient svg {
+
+  color: #ffffff !important;
+
+  stroke: #ffffff !important;
+}
+
+
+.button-gradient:hover {
+
+  background: var(--button-gradient-hover);
+
+  transform: scale(1.02);
 }
 
 /* =========================================
@@ -85,11 +146,9 @@ body {
 
 .btn-primary {
   background:
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       #10B981,
-      #14B8A6
-    );
+      #14B8A6);
 
   color: white;
 
@@ -141,7 +200,7 @@ body {
 
   border: 1px solid #E5E7EB;
 
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
 
   transition: all 0.3s ease;
 }
@@ -152,7 +211,7 @@ body {
   border-color: var(--primary);
 
   box-shadow:
-    0 0 0 4px rgba(16,185,129,0.12);
+    0 0 0 4px rgba(16, 185, 129, 0.12);
 }
 
 /* =========================================
@@ -164,7 +223,7 @@ body {
 }
 
 .table-premium tbody tr:hover {
-  background: rgba(167,243,208,0.18);
+  background: rgba(205, 247, 227, 0.18);
 }
 
 /* =========================================
@@ -177,7 +236,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #A7F3D0;
+  background: #afafaf;
   border-radius: 999px;
 }
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import {
   Calendar,
@@ -13,6 +13,8 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
+import * as XLSX from "xlsx";
+import MonthYearFilter from "@/shared/components/common/MonthYearFilter";
 
 type AppointmentStatus = "Confirmed" | "Pending" | "Cancelled";
 
@@ -65,7 +67,7 @@ const initialAppointments: Appointment[] = [
     patientPhone: "+91 91234 77880",
     patientEmail: "neha.singh@email.com",
     doctorName: "Dr. Arjun Verma",
-    appointmentDate: "06 May 2026",
+    appointmentDate: "06 August 2025",
     appointmentTime: "02:30 PM",
     department: "Orthodontics",
     reason: "Brace Adjustment",
@@ -116,11 +118,64 @@ export default function AppointmentsPage() {
     defaultAppointmentForm
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const currentYear = new Date().getFullYear();
+
+
+
+
+
+
+  useEffect(() => {
+
+    setCurrentPage(1);
+
+  }, [
+    searchTerm,
+    statusFilter,
+    startDate,
+    endDate,
+    itemsPerPage,
+  ]);
+
+  const [appointmentsFilter, setAppointmentsFilter] =
+    useState({
+      month: new Date().getMonth(),
+      year: currentYear,
+    });
+
+  const [confirmedFilter, setConfirmedFilter] =
+    useState({
+      month: new Date().getMonth(),
+      year: currentYear,
+    });
+
+  const [pendingFilter, setPendingFilter] =
+    useState({
+      month: new Date().getMonth(),
+      year: currentYear,
+    });
+
+  const [departmentFilter, setDepartmentFilter] =
+    useState({
+      month: new Date().getMonth(),
+      year: currentYear,
+    });
+
+
   const filteredAppointments = useMemo(() => {
+
     const query = searchTerm.trim().toLowerCase();
 
     return appointments.filter((apt) => {
-      const matchesStatus = statusFilter === "All" || apt.status === statusFilter;
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        apt.status === statusFilter;
+
       const matchesSearch =
         !query ||
         [
@@ -132,42 +187,236 @@ export default function AppointmentsPage() {
           apt.appointmentDate,
           apt.department,
           apt.reason,
-        ].some((value) => value.toLowerCase().includes(query));
+        ].some((value) =>
+          value.toLowerCase().includes(query)
+        );
 
-      return matchesStatus && matchesSearch;
+      const formattedDate = new Date(
+        Date.parse(apt.appointmentDate)
+      );
+
+      const appointmentDate = new Date(
+        Date.parse(apt.appointmentDate)
+      );
+
+      const matchesStart =
+        !startDate ||
+        formattedDate >= new Date(startDate);
+
+      const matchesEnd =
+        !endDate ||
+        formattedDate <= new Date(endDate);
+
+      const matchesMonthYear =
+        appointmentDate.getMonth() === appointmentsFilter.month &&
+        appointmentDate.getFullYear() === appointmentsFilter.year;
+
+      return (
+        matchesStatus &&
+        matchesSearch &&
+        matchesStart &&
+        matchesEnd &&
+        matchesMonthYear
+      );
+
     });
-  }, [searchTerm, statusFilter, appointments]);
 
-  const confirmedAppointments = appointments.filter(
-    (apt) => apt.status === "Confirmed"
-  ).length;
-  const pendingAppointments = appointments.filter(
-    (apt) => apt.status === "Pending"
-  ).length;
-  const departments = new Set(appointments.map((apt) => apt.department)).size;
+  }, [
+    searchTerm,
+    statusFilter,
+    appointments,
+    startDate,
+    endDate,
+    appointmentsFilter
+  ]);
 
-  const handleInputChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setAppointmentForm((currentForm) => ({ ...currentForm, [name]: value }));
+
+  const totalPages = Math.ceil(
+    filteredAppointments.length / itemsPerPage
+  );
+
+
+  const paginatedAppointments =
+    filteredAppointments.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+
+
+  const monthlyAppointments = appointments.filter((apt) => {
+
+    const date = new Date(
+      Date.parse(apt.appointmentDate)
+    );
+
+    return (
+      date.getMonth() === appointmentsFilter.month &&
+      date.getFullYear() === appointmentsFilter.year
+    );
+
+  }).length;
+
+
+  const confirmedAppointments = appointments.filter((apt) => {
+
+    const date = new Date(
+      Date.parse(apt.appointmentDate)
+    );
+
+    return (
+      apt.status === "Confirmed" &&
+      date.getMonth() === confirmedFilter.month &&
+      date.getFullYear() === confirmedFilter.year
+    );
+
+  }).length;
+
+
+  const pendingAppointments = appointments.filter((apt) => {
+
+    const date = new Date(
+      Date.parse(apt.appointmentDate)
+    );
+
+    return (
+      apt.status === "Pending" &&
+      date.getMonth() === pendingFilter.month &&
+      date.getFullYear() === pendingFilter.year
+    );
+
+  }).length;
+
+
+  const departments = new Set(
+    appointments
+      .filter((apt) => {
+        const date = new Date(
+          Date.parse(apt.appointmentDate)
+        );
+
+        return (
+          date.getMonth() === departmentFilter.month &&
+          date.getFullYear() === departmentFilter.year
+        );
+
+      })
+      .map((apt) => apt.department)
+
+  ).size;
+
+
+
+
+
+
+  const exportToExcel = () => {
+
+    const exportData = filteredAppointments.map((apt) => ({
+      ID: apt.id,
+      Patient: apt.patientName,
+      Phone: apt.patientPhone,
+      Email: apt.patientEmail,
+      Doctor: apt.doctorName,
+      Date: apt.appointmentDate,
+      Time: apt.appointmentTime,
+      Department: apt.department,
+      Reason: apt.reason,
+      Status: apt.status,
+      Notes: apt.notes,
+    }));
+
+    const worksheet =
+      XLSX.utils.json_to_sheet(exportData);
+
+    const workbook =
+      XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Appointments"
+    );
+
+    XLSX.writeFile(
+      workbook,
+      "Appointments.xlsx"
+    );
   };
 
+
+  const sendMail = (apt: Appointment) => {
+
+    const subject =
+      `Appointment Details - ${apt.patientName}`;
+
+    const body = `
+  Appointment ID: ${apt.id}
+
+  Patient: ${apt.patientName}
+
+  Doctor: ${apt.doctorName}
+
+  Department: ${apt.department}
+
+  Date: ${apt.appointmentDate}
+
+  Time: ${apt.appointmentTime}
+
+  Reason: ${apt.reason}
+
+  Status: ${apt.status}
+  `;
+
+    window.location.href =
+      `mailto:${apt.patientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+
+  const handleInputChange = (
+    event: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) => {
+
+    const { name, value } = event.target;
+
+    setAppointmentForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }));
+  };
+
+
   const closeAddModal = () => {
+
     setIsAddModalOpen(false);
+
     setAppointmentForm(defaultAppointmentForm);
   };
 
-  const handleAddAppointment = (event: FormEvent<HTMLFormElement>) => {
+
+  const handleAddAppointment = (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+
     event.preventDefault();
 
     setAppointments((currentAppointments) => [
+
       {
         ...appointmentForm,
-        id: `APT-${String(currentAppointments.length + 1).padStart(3, "0")}`,
+
+        id: `APT-${String(
+          currentAppointments.length + 1
+        ).padStart(3, "0")}`,
       },
+
       ...currentAppointments,
+
     ]);
+
     closeAddModal();
   };
 
@@ -175,9 +424,6 @@ export default function AppointmentsPage() {
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
-            Patient Management
-          </p>
           <h1 className="mt-1 text-2xl font-semibold text-gray-950">
             Appointments
           </h1>
@@ -189,7 +435,7 @@ export default function AppointmentsPage() {
         <button
           type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700"
+          className="inline-flex items-center gap-2 px-5 py-3 button-gradient"
         >
           <Plus size={18} />
           Add Appointment
@@ -197,57 +443,100 @@ export default function AppointmentsPage() {
       </div>
 
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+
         {[
           {
-            label: "Total Appointments",
-            value: appointments.length,
+            label: "Appointments",
+            value: monthlyAppointments,
             icon: Calendar,
-            color: "bg-blue-100 text-blue-700",
+            color: "bg-blue-100 text-green-700",
+            filter: appointmentsFilter,
+            setFilter: setAppointmentsFilter,
           },
           {
             label: "Confirmed",
             value: confirmedAppointments,
             icon: CheckCircle,
             color: "bg-emerald-100 text-emerald-700",
+            filter: confirmedFilter,
+            setFilter: setConfirmedFilter,
           },
           {
             label: "Pending",
             value: pendingAppointments,
             icon: AlertCircle,
             color: "bg-amber-100 text-amber-700",
+            filter: pendingFilter,
+            setFilter: setPendingFilter,
           },
           {
             label: "Departments",
             value: departments,
             icon: User,
             color: "bg-indigo-100 text-indigo-700",
+            filter: departmentFilter,
+            setFilter: setDepartmentFilter,
           },
         ].map((item) => {
+
           const Icon = item.icon;
 
           return (
+
             <div
               key={item.label}
               className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-gray-500">{item.label}</p>
+
+              <div className="flex items-start justify-between gap-4">
+
+                {/* LEFT */}
+
+                <div className="flex-1">
+
+                  <p className="text-xs text-gray-500">
+                    {item.label}
+                  </p>
+
                   <p className="mt-1 text-2xl font-semibold text-gray-950">
                     {item.value}
                   </p>
+
+                  {/* FILTERS */}
+                  <MonthYearFilter
+                    month={item.filter.month}
+                    year={item.filter.year}
+                    onMonthChange={(month) =>
+                      item.setFilter((prev: any) => ({
+                        ...prev,
+                        month,
+                      }))
+                    }
+                    onYearChange={(year) =>
+                      item.setFilter((prev: any) => ({
+                        ...prev,
+                        year,
+                      }))
+                    }
+                  />
+
                 </div>
+
+                {/* ICON */}
+
                 <div
                   className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.color}`}
                 >
                   <Icon size={19} />
                 </div>
+
               </div>
+
             </div>
           );
         })}
-      </div>
 
+      </div>
       <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
         <div className="mb-4 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>
@@ -260,19 +549,27 @@ export default function AppointmentsPage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+
+            {/* SEARCH */}
+
             <div className="relative w-full md:w-80">
+
               <Search
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
+
               <input
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search appointments..."
                 className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
               />
+
             </div>
+
+            {/* STATUS FILTER */}
 
             <select
               value={statusFilter}
@@ -286,6 +583,34 @@ export default function AppointmentsPage() {
               <option>Pending</option>
               <option>Cancelled</option>
             </select>
+
+            {/* START DATE */}
+
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="h-11 rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm font-medium text-gray-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            />
+
+            {/* END DATE */}
+
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="h-11 rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm font-medium text-gray-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            />
+
+            {/* EXPORT BUTTON */}
+
+            <button
+              onClick={exportToExcel}
+              className="inline-flex items-center gap-2 px-5 py-3 button-gradient"
+            >
+              Export Excel
+            </button>
+
           </div>
         </div>
 
@@ -306,7 +631,7 @@ export default function AppointmentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filteredAppointments.map((apt) => (
+                  {paginatedAppointments.map((apt) => (
                     <tr key={apt.id} className="transition hover:bg-blue-50/50">
                       <td className="px-5 py-4">
                         <div className="min-w-0">
@@ -361,21 +686,120 @@ export default function AppointmentsPage() {
                         </span>
                       </td>
                       <td className="px-5 py-4">
-                        <div className="flex justify-end">
+
+                        <div className="flex justify-end gap-2">
+
+                          {/* VIEW */}
+
                           <button
                             type="button"
                             onClick={() => setSelectedAppointment(apt)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 transition hover:bg-blue-100"
-                            aria-label={`View ${apt.patientName} appointment`}
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-green-700 transition hover:bg-blue-100"
                           >
                             <Eye size={16} />
                           </button>
+
+                          {/* MAIL */}
+
+                          <button
+                            type="button"
+                            onClick={() => sendMail(apt)}
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-orange-100 bg-orange-50 text-orange-700 transition hover:bg-orange-100"
+                          >
+                            <Mail size={16} />
+                          </button>
+
                         </div>
+
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              <div className="flex flex-col gap-4 border-t border-gray-100 px-5 py-4 md:flex-row md:items-center md:justify-between">
+
+                {/* LEFT */}
+
+                <div className="flex items-center gap-3">
+
+                  <p className="text-sm text-gray-500">
+                    Showing{" "}
+                    <span className="font-semibold text-gray-900">
+                      {(currentPage - 1) * itemsPerPage + 1}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-semibold text-gray-900">
+                      {Math.min(
+                        currentPage * itemsPerPage,
+                        filteredAppointments.length
+                      )}
+                    </span>{" "}
+                    of{" "}
+                    <span className="font-semibold text-gray-900">
+                      {filteredAppointments.length}
+                    </span>
+                  </p>
+
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) =>
+                      setItemsPerPage(Number(e.target.value))
+                    }
+                    className="h-10 rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm"
+                  >
+                    <option value={10}>10</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+
+                </div>
+
+                {/* RIGHT */}
+
+                <div className="flex items-center gap-2">
+
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() =>
+                      setCurrentPage((prev) => prev - 1)
+                    }
+                    className="rounded-xl bg-gray-100 px-4 py-2 text-sm"
+                  >
+                    Previous
+                  </button>
+
+                  {Array.from(
+                    { length: totalPages },
+                    (_, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          setCurrentPage(index + 1)
+                        }
+                        className={`h-10 w-10 rounded-xl text-sm font-semibold ${currentPage === index + 1
+                          ? "button-gradient text-white"
+                          : "bg-gray-100 text-gray-700"
+                          }`}
+                      >
+                        {index + 1}
+                      </button>
+                    )
+                  )}
+
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() =>
+                      setCurrentPage((prev) => prev + 1)
+                    }
+                    className="rounded-xl bg-gray-100 px-4 py-2 text-sm"
+                  >
+                    Next
+                  </button>
+
+                </div>
+
+              </div>
             </div>
           </div>
         ) : (
@@ -391,6 +815,9 @@ export default function AppointmentsPage() {
             </p>
           </div>
         )}
+
+
+
       </div>
 
       {selectedAppointment && (
@@ -424,7 +851,7 @@ export default function AppointmentsPage() {
                 >
                   {selectedAppointment.status}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-green-700">
                   {selectedAppointment.department}
                 </span>
               </div>
@@ -480,7 +907,7 @@ export default function AppointmentsPage() {
                       className="rounded-2xl border border-gray-100 bg-gray-50 p-4"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-green-600 shadow-sm">
                           <Icon size={18} />
                         </div>
                         <div className="min-w-0">
@@ -564,8 +991,8 @@ export default function AppointmentsPage() {
                   {
                     label: "Appointment Date",
                     name: "appointmentDate",
-                    type: "text",
-                    placeholder: "02 May 2026",
+                    type: "date",
+
                   },
                   {
                     label: "Appointment Time",
@@ -590,11 +1017,11 @@ export default function AppointmentsPage() {
                       name={field.name}
                       value={
                         appointmentForm[
-                          field.name as keyof AppointmentForm
+                        field.name as keyof AppointmentForm
                         ]
                       }
                       onChange={handleInputChange}
-                      placeholder={field.placeholder}
+                      placeholder={field.placeholder || ""}
                       className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
                     />
                   </label>

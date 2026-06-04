@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +15,7 @@ import {
 
 export default function Login() {
   const setAuth = useAuthStore((s) => s.setAuth);
+  const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -22,6 +23,10 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [hospitalCode, setHospitalCode] = useState("");
+
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -325,7 +330,7 @@ export default function Login() {
 
                 <button
                   type="button"
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-sm text-green-600 hover:text-green-700 font-medium"
                 >
                   Forgot Password?
                 </button>

@@ -99,6 +99,30 @@ const appointments = [
     date: "09 May 2026",
     status: "Pending",
   },
+    {
+    id: "#PT1003",
+    name: "Anjali Verma",
+    doctor: "Dr. Singh",
+    department: "Neurology",
+    date: "09 May 2026",
+    status: "Pending",
+  },
+    {
+    id: "#PT1003",
+    name: "Anjali Verma",
+    doctor: "Dr. Singh",
+    department: "Neurology",
+    date: "09 May 2026",
+    status: "Pending",
+  },
+    {
+    id: "#PT1003",
+    name: "Anjali Verma",
+    doctor: "Dr. Singh",
+    department: "Neurology",
+    date: "09 May 2026",
+    status: "Pending",
+  },
 ];
 
 const COLORS = ["#2563EB", "#7C3AED", "#14B8A6", "#F97316"];
@@ -243,7 +267,6 @@ export default function Dashboard() {
         </div>
         {/* ================= PREMIUM TABLE ================= */}
         <div className="rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden">
-
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
 
             <div>
@@ -259,14 +282,14 @@ export default function Dashboard() {
             <button className="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 text-sm">
               View All
             </button>
-
           </div>
 
-          <div className="overflow-x-auto">
+          {/* SCROLL AREA */}
+          <div className="overflow-x-auto overflow-y-auto max-h-[400px]">
 
-            <table className="w-full">
+            <table className="w-full min-w-[900px]">
 
-              <thead className="bg-gray-50/80">
+              <thead className="bg-gray-50/80 sticky top-0 z-10">
 
                 <tr className="text-left">
 
@@ -291,6 +314,7 @@ export default function Dashboard() {
                   </th>
 
                 </tr>
+
               </thead>
 
               <tbody>
@@ -321,7 +345,9 @@ export default function Dashboard() {
                           </p>
 
                         </div>
+
                       </div>
+
                     </td>
 
                     <td className="px-6 py-5 text-gray-700">
@@ -345,10 +371,10 @@ export default function Dashboard() {
 
                       <span
                         className={`px-4 py-2 rounded-full text-xs font-semibold ${item.status === "Completed"
-                          ? "bg-green-100 text-green-600"
-                          : item.status === "Pending"
-                            ? "bg-orange-100 text-orange-600"
-                            : "bg-purple-100 text-purple-600"
+                            ? "bg-green-100 text-green-600"
+                            : item.status === "Pending"
+                              ? "bg-orange-100 text-orange-600"
+                              : "bg-purple-100 text-purple-600"
                           }`}
                       >
                         {item.status}
@@ -361,8 +387,11 @@ export default function Dashboard() {
                 ))}
 
               </tbody>
+
             </table>
+
           </div>
+
         </div>
         {/* ================= ANALYTICS ================= */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -382,7 +411,7 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <button className="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 text-sm">
+              <button className="px-4 py-2 rounded-xl bg-blue-50 text-green-600 text-sm">
                 This Year
               </button>
 

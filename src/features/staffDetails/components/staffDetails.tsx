@@ -214,7 +214,7 @@ export default function StaffDetails() {
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             Operations Team
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-gray-950">
@@ -237,7 +237,7 @@ export default function StaffDetails() {
 
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Total Staff", value: staffMembers.length, icon: Users, color: "bg-blue-100 text-blue-700" },
+          { label: "Total Staff", value: staffMembers.length, icon: Users, color: "bg-blue-100 text-green-700" },
           { label: "Active Staff", value: activeStaff, icon: BadgeCheck, color: "bg-emerald-100 text-emerald-700" },
           { label: "On Leave", value: onLeaveStaff, icon: CalendarDays, color: "bg-amber-100 text-amber-700" },
           { label: "Departments", value: departments, icon: BriefcaseBusiness, color: "bg-indigo-100 text-indigo-700" },
@@ -372,7 +372,7 @@ export default function StaffDetails() {
                           <button
                             type="button"
                             onClick={() => setSelectedStaff(staff)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 transition hover:bg-blue-100"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-green-700 transition hover:bg-blue-100"
                             aria-label={`View ${staff.name}`}
                           >
                             <Eye size={16} />
@@ -429,7 +429,7 @@ export default function StaffDetails() {
                 <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${statusStyles[selectedStaff.status]}`}>
                   {selectedStaff.status}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-green-700">
                   {selectedStaff.shift} shift
                 </span>
                 <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
@@ -454,7 +454,7 @@ export default function StaffDetails() {
                   return (
                     <div key={item.label} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-green-600 shadow-sm">
                           <Icon size={18} />
                         </div>
                         <div className="min-w-0">

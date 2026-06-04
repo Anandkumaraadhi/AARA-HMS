@@ -9,16 +9,21 @@ import {
   Mail,
   MapPin,
   Phone,
-  Plus,
   Search,
   ShieldCheck,
   UserRound,
   Users,
   X,
 } from "lucide-react";
+import AddPatientList from "./AddPatientList";
+import CommonDataTable from "@/shared/components/common/CommonDataTable";
+import { MRT_ColumnDef } from "material-react-table";
 
-type PatientStatus = "Active" | "Follow-up" | "Critical" | "Inactive";
+type PatientStatus = "Active" | "Follow-up" | "Critical" | "Inactive" | "Cancelled";
 type DateFilter = "All" | "Today" | "Last7Days" | "LastMonth" | "Custom";
+type PaymentStatus = "Paid" | "Partial" | "Unpaid";
+
+type PaymentMode = "Cash" | "Card" | "UPI" | "QR" | "Insurance";
 
 type Patient = {
   id: string;
@@ -28,13 +33,24 @@ type Patient = {
   phone: string;
   email: string;
   bloodGroup: string;
+
   condition: string;
   assignedDoctor: string;
+
   lastVisit: string;
   lastVisitDate: string;
   nextAppointment: string;
   nextAppointmentDate: string;
+
   invoiceNumber: string;
+
+  totalAmount: number;
+  amountReceived: number;
+  balanceAmount: number;
+
+  paymentStatus: PaymentStatus;
+  paymentMode: PaymentMode;
+
   insurance: string;
   location: string;
   status: PatientStatus;
@@ -56,6 +72,11 @@ const patients: Patient[] = [
     nextAppointment: "04 May 2026, 10:30 AM",
     nextAppointmentDate: "2026-05-04",
     invoiceNumber: "INV-2026-1025",
+    totalAmount: 12000,
+    amountReceived: 12000,
+    balanceAmount: 0,
+    paymentStatus: "Paid",
+    paymentMode: "Card",
     insurance: "Star Health",
     location: "Bengaluru",
     status: "Follow-up",
@@ -75,6 +96,11 @@ const patients: Patient[] = [
     nextAppointment: "06 May 2026, 11:15 AM",
     nextAppointmentDate: "2026-05-06",
     invoiceNumber: "INV-2026-1024",
+    totalAmount: 35000,
+    amountReceived: 15000,
+    balanceAmount: 20000,
+    paymentStatus: "Partial",
+    paymentMode: "UPI",
     insurance: "Self Pay",
     location: "Hyderabad",
     status: "Active",
@@ -94,6 +120,11 @@ const patients: Patient[] = [
     nextAppointment: "02 May 2026, 03:00 PM",
     nextAppointmentDate: "2026-05-02",
     invoiceNumber: "INV-2026-1023",
+    totalAmount: 8000,
+    amountReceived: 0,
+    balanceAmount: 8000,
+    paymentStatus: "Unpaid",
+    paymentMode: "Cash",
     insurance: "HDFC Ergo",
     location: "Chennai",
     status: "Critical",
@@ -110,21 +141,124 @@ const patients: Patient[] = [
     assignedDoctor: "Dr. Mehta",
     lastVisit: "20 Apr 2026",
     lastVisitDate: "2026-04-20",
-    nextAppointment: "Pending",
+    nextAppointment: "04 May 2026, 10:30 AM",
     nextAppointmentDate: "",
     invoiceNumber: "INV-2026-1022",
+    totalAmount: 75000,
+    amountReceived: 50000,
+    balanceAmount: 25000,
+    paymentStatus: "Partial",
+    paymentMode: "QR",
     insurance: "ICICI Lombard",
     location: "Mumbai",
     status: "Inactive",
   },
+  {
+    id: "#PT0022",
+    name: "Vikram Kapoor",
+    age: 51,
+    gender: "Male",
+    phone: "+91 90909 11122",
+    email: "vikram.kapoor@email.com",
+    bloodGroup: "AB+",
+    condition: "Implant consultation",
+    assignedDoctor: "Dr. Mehta",
+    lastVisit: "20 Apr 2026",
+    lastVisitDate: "2026-04-20",
+    nextAppointment: "04 May 2026, 10:30 AM",
+    nextAppointmentDate: "",
+    invoiceNumber: "INV-2026-1022",
+    totalAmount: 75000,
+    amountReceived: 50000,
+    balanceAmount: 25000,
+    paymentStatus: "Partial",
+    paymentMode: "QR",
+    insurance: "ICICI Lombard",
+    location: "Mumbai",
+    status: "Inactive",
+  },
+  {
+    id: "#PT0022",
+    name: "Vikram Kapoor",
+    age: 51,
+    gender: "Male",
+    phone: "+91 90909 11122",
+    email: "vikram.kapoor@email.com",
+    bloodGroup: "AB+",
+    condition: "Implant consultation",
+    assignedDoctor: "Dr. Mehta",
+    lastVisit: "20 Apr 2026",
+    lastVisitDate: "2026-04-20",
+    nextAppointment: "04 May 2026, 10:30 AM",
+    nextAppointmentDate: "",
+    invoiceNumber: "INV-2026-1022",
+    totalAmount: 75000,
+    amountReceived: 50000,
+    balanceAmount: 25000,
+    paymentStatus: "Partial",
+    paymentMode: "QR",
+    insurance: "ICICI Lombard",
+    location: "Mumbai",
+    status: "Cancelled",
+  },
+  {
+    id: "#PT0022",
+    name: "Vikram Kapoor",
+    age: 51,
+    gender: "Male",
+    phone: "+91 90909 11122",
+    email: "vikram.kapoor@email.com",
+    bloodGroup: "AB+",
+    condition: "Implant consultation",
+    assignedDoctor: "Dr. Mehta",
+    lastVisit: "20 Apr 2026",
+    lastVisitDate: "2026-04-20",
+    nextAppointment: "04 May 2026, 10:30 AM",
+    nextAppointmentDate: "",
+    invoiceNumber: "INV-2026-1022",
+    totalAmount: 75000,
+    amountReceived: 50000,
+    balanceAmount: 25000,
+    paymentStatus: "Partial",
+    paymentMode: "QR",
+    insurance: "ICICI Lombard",
+    location: "Mumbai",
+    status: "Inactive",
+  },
+
+  {
+    id: "#PT0022",
+    name: "22222222 Kapoor",
+    age: 51,
+    gender: "Male",
+    phone: "+91 90909 11122",
+    email: "vikram.kapoor@email.com",
+    bloodGroup: "AB+",
+    condition: "Implant consultation",
+    assignedDoctor: "Dr. Mehta",
+    lastVisit: "20 Apr 2026",
+    lastVisitDate: "2026-04-20",
+    nextAppointment: "04 May 2026, 10:30 AM",
+    nextAppointmentDate: "",
+    invoiceNumber: "INV-2026-1022",
+    totalAmount: 75000,
+    amountReceived: 50000,
+    balanceAmount: 25000,
+    paymentStatus: "Partial",
+    paymentMode: "QR",
+    insurance: "ICICI Lombard",
+    location: "Mumbai",
+    status: "Cancelled",
+  },
 ];
 
-const statusStyles: Record<PatientStatus, string> = {
-  Active: "bg-emerald-50 text-emerald-700",
-  "Follow-up": "bg-blue-50 text-blue-700",
-  Critical: "bg-red-50 text-red-700",
-  Inactive: "bg-gray-100 text-gray-600",
-};
+// const statusStyles: Record<PatientStatus, string> = {
+//   Active: "bg-emerald-50 text-emerald-700",
+//   "Follow-up": "bg-blue-50 text-green-700",
+//   Critical: "bg-red-50 text-red-700",
+//   Inactive: "bg-gray-100 text-gray-600",
+//   Cancelled: "bg-red-100 text-red-600",
+// };
 
 const todayDate = "2026-05-02";
 
@@ -149,6 +283,9 @@ const isDateInRange = (date: string, start: Date, end: Date) => {
   return value >= start && value <= end;
 };
 
+
+
+
 export default function PatientList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"All" | PatientStatus>("All");
@@ -156,6 +293,7 @@ export default function PatientList() {
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
 
   const filteredPatients = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -208,6 +346,146 @@ export default function PatientList() {
     });
   }, [customEndDate, customStartDate, dateFilter, searchTerm, statusFilter]);
 
+  const statusStyles: Record<string, string> = {
+    Active: "bg-green-50 text-green-700",
+    Pending: "bg-red-50 text-red-700",
+    Critical: "bg-red-50 text-red-700",
+    "Follow-up": "bg-blue-50 text-green-700",
+    Inactive: "bg-gray-100 text-gray-600",
+    Cancelled: "bg-red-100 text-red-600",
+  };
+
+  const statusPayment: Record<string, string> = {
+    Paid: "bg-green-50 text-green-700",
+    Partial: "bg-yellow-50 text-yellow-700",
+    Unpaid: "bg-red-50 text-red-700",
+    Pending: "bg-red-50 text-red-700",
+  };
+
+  const columns = useMemo<MRT_ColumnDef<Patient>[]>(
+    () => [
+      {
+        accessorKey: "invoiceNumber",
+        header: "Invoice No.",
+        size: 140,
+      },
+
+      {
+        accessorKey: "name",
+        header: "Patient",
+        size: 220,
+        Cell: ({ row }: any) => (
+          <div className="flex flex-col">
+            <span className="font-medium text-gray-900">
+              {row.original.name}
+            </span>
+
+            <div className="mt-1 flex items-center justify-between text-xs">
+              <span className="font-medium text-gray-500">
+                Age: {row.original.age}
+              </span>
+
+              <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 font-semibold text-red-700">
+                {row.original.bloodGroup}
+              </span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "phone",
+        header: "Phone",
+        size: 150,
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        size: 200,
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        size: 130,
+        Cell: ({ cell }: any) => (
+          <span
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[cell.getValue()] || "bg-gray-100 text-gray-600"
+              }`}
+          >
+            {cell.getValue()}
+          </span>
+        ),
+      },
+
+      {
+        accessorKey: "condition",
+        header: "Clinical Info",
+        size: 250,
+      },
+      {
+        accessorKey: "assignedDoctor",
+        header: "Doctor",
+        size: 200,
+      },
+      {
+        accessorKey: "nextAppointment",
+        header: "Appointment",
+        size: 220,
+      },
+      {
+        accessorKey: "amountReceived",
+        header: "Received",
+        size: 140,
+      },
+      {
+        accessorKey: "paymentStatus",
+        header: "Payment",
+        size: 120,
+        Cell: ({ cell }: any) => (
+          <span
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusPayment[cell.getValue()] || "bg-gray-100 text-gray-600"
+              }`}
+          >
+            {cell.getValue()}
+          </span>
+        ),
+      },
+
+
+      // New columns
+      {
+        accessorKey: "insurance",
+        header: "Insurance",
+        size: 180,
+      },
+      {
+        accessorKey: "location",
+        header: "Location",
+        size: 150,
+      },
+      {
+        accessorKey: "gender",
+        header: "Gender",
+        size: 100,
+      },
+      {
+        accessorKey: "totalAmount",
+        header: "Total Amount",
+        size: 150,
+      },
+      {
+        accessorKey: "balanceAmount",
+        header: "Balance",
+        size: 150,
+      },
+      {
+        accessorKey: "lastVisit",
+        header: "Last Visit",
+        size: 180,
+      },
+    ],
+    []
+  );
+
   const statusCounts = patients.reduce(
     (counts, patient) => ({
       ...counts,
@@ -216,11 +494,15 @@ export default function PatientList() {
     { Active: 0, "Follow-up": 0, Critical: 0, Inactive: 0 } as Record<PatientStatus, number>
   );
 
+
+  const handleSendMail = (_patient: Patient) => {
+    console.log("send mail");
+  }
   return (
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             Patient Care
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-gray-950">
@@ -231,13 +513,14 @@ export default function PatientList() {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700"
-        >
-          <Plus size={18} />
-          Add Patient
+        <button onClick={() => setIsAddPatientOpen(true)} className="px-5 py-3 button-gradient text-white rounded-2xl hover:scale-[1.02] transition">
+          + Add Patient
         </button>
+
+        <AddPatientList
+          isOpen={isAddPatientOpen}
+          onClose={() => setIsAddPatientOpen(false)}
+        />
       </div>
 
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -246,7 +529,7 @@ export default function PatientList() {
             label: "Total Patients",
             value: patients.length,
             icon: Users,
-            color: "bg-blue-100 text-blue-700",
+            color: "bg-blue-100 text-green-700",
           },
           {
             label: "Active Patients",
@@ -366,117 +649,31 @@ export default function PatientList() {
         </div>
 
         {filteredPatients.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-gray-100">
-            <div className="overflow-x-auto pb-3 [scrollbar-width:thin] [scrollbar-color:#93c5fd_#f1f5f9]">
-              <table className="min-w-[1460px] w-full border-collapse bg-white text-left">
-                <thead>
-                  <tr className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    <th className="px-5 py-4">Patient</th>
-                    <th className="px-5 py-4">Phone</th>
-                    <th className="px-5 py-4">Email</th>
-                    <th className="px-5 py-4">Clinical Info</th>
-                    <th className="px-5 py-4">Assigned Doctor</th>
-                    <th className="px-5 py-4">Last Visit</th>
-                    <th className="px-5 py-4">Next Visit</th>
-                    <th className="px-5 py-4">Invoice No.</th>
-                    <th className="px-5 py-4">Insurance</th>
-                    <th className="px-5 py-4">Location</th>
-                    <th className="px-5 py-4">Status</th>
-                    <th className="px-5 py-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredPatients.map((patient) => (
-                    <tr key={patient.id} className="transition hover:bg-blue-50/50">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-2 ring-white shadow-sm">
-                            <UserRound size={20} />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-gray-950">
-                              {patient.name}
-                            </p>
-                            <p className="mt-1 text-xs text-gray-500">
-                              {patient.id} • {patient.age} yrs • {patient.gender}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                          {patient.phone}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="flex max-w-56 items-center gap-2 text-sm text-gray-600">
-                          <Mail size={14} className="flex-none text-gray-400" />
-                          <span className="truncate">{patient.email}</span>
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="space-y-2">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">
-                            {patient.bloodGroup}
-                          </span>
-                          <p className="max-w-52 truncate text-sm font-medium text-gray-700">
-                            {patient.condition}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700">
-                          {patient.assignedDoctor}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                          {patient.lastVisit}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                          {patient.nextAppointment}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700">
-                          {patient.invoiceNumber}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
-                          {patient.insurance}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
-                          {patient.location}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${statusStyles[patient.status]}`}
-                        >
-                          {patient.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex justify-end">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedPatient(patient)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 transition hover:bg-blue-100"
-                            aria-label={`View ${patient.name}`}
-                          >
-                            <Eye size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          /* FIX: Explicitly enforce standard grid boundaries on the wrapper */
+          <div className="grid grid-cols-1 min-w-0 w-full rounded-2xl border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto max-w-full">
+              <CommonDataTable
+                columns={columns}
+                data={filteredPatients}
+                renderRowActions={({ row }) => (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSendMail(row.original)}
+                      className="rounded-lg bg-yellow-50 p-2 text-yellow-700 hover:bg-yellow-100"
+                      title="Email"
+                    >
+                      <Mail size={16} />
+                    </button>
+                    <button
+                      onClick={() => setSelectedPatient(row.original)}
+                      className="rounded-lg bg-green-50 p-2 text-green-700 hover:bg-green-100"
+                      title="View"
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </div>
+                )}
+              />
             </div>
           </div>
         ) : (
@@ -499,7 +696,7 @@ export default function PatientList() {
           <div className="max-h-[90vh] w-full max-w-4xl overflow-auto rounded-2xl bg-white shadow-2xl">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-5 py-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-green-700">
                   <UserRound size={22} />
                 </div>
                 <div>
@@ -589,7 +786,7 @@ export default function PatientList() {
                       className="rounded-2xl border border-gray-100 bg-gray-50 p-4"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-green-600 shadow-sm">
                           <Icon size={18} />
                         </div>
                         <div className="min-w-0">
@@ -608,7 +805,15 @@ export default function PatientList() {
             </div>
           </div>
         </div>
+
+
+
       )}
     </div>
+
+
+
+
+
   );
 }

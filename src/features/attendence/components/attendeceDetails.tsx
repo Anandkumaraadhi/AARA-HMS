@@ -122,7 +122,7 @@ const statusStyles: Record<AttendanceStatus, string> = {
   Present: "bg-emerald-50 text-emerald-700",
   Late: "bg-amber-50 text-amber-700",
   Absent: "bg-red-50 text-red-700",
-  "Half Day": "bg-blue-50 text-blue-700",
+  "Half Day": "bg-blue-50 text-green-700",
   "On Leave": "bg-gray-100 text-gray-600",
 };
 
@@ -172,7 +172,7 @@ export default function AttendeceDetails() {
     <div className="min-h-full rounded-2xl bg-gradient-to-br from-slate-50 via-white to-blue-50 p-5 md:p-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             Staff Attendance
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-gray-950">
@@ -184,14 +184,14 @@ export default function AttendeceDetails() {
         </div>
 
         <div className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm">
-          <CalendarDays size={18} className="text-blue-600" />
+          <CalendarDays size={18} className="text-green-600" />
           {dateFilter || "All Dates"}
         </div>
       </div>
 
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Total Records", value: todaysRecords.length, icon: Users, color: "bg-blue-100 text-blue-700" },
+          { label: "Total Records", value: todaysRecords.length, icon: Users, color: "bg-blue-100 text-green-700" },
           { label: "Present", value: presentCount, icon: UserCheck, color: "bg-emerald-100 text-emerald-700" },
           { label: "Late", value: lateCount, icon: Timer, color: "bg-amber-100 text-amber-700" },
           { label: "Absent", value: absentCount, icon: BadgeCheck, color: "bg-red-100 text-red-700" },
@@ -318,7 +318,7 @@ export default function AttendeceDetails() {
                         </span>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="inline-flex items-center rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700">
+                        <span className="inline-flex items-center rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-green-700">
                           {record.workedHours}
                         </span>
                       </td>
@@ -344,7 +344,7 @@ export default function AttendeceDetails() {
                           <button
                             type="button"
                             onClick={() => setSelectedRecord(record)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 transition hover:bg-blue-100"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-green-700 transition hover:bg-blue-100"
                             aria-label={`View ${record.name}`}
                           >
                             <Eye size={16} />
@@ -397,7 +397,7 @@ export default function AttendeceDetails() {
                 <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${statusStyles[selectedRecord.status]}`}>
                   {selectedRecord.status}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-green-700">
                   {selectedRecord.workedHours}
                 </span>
                 <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
@@ -421,7 +421,7 @@ export default function AttendeceDetails() {
                   return (
                     <div key={item.label} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-green-600 shadow-sm">
                           <Icon size={18} />
                         </div>
                         <div className="min-w-0">

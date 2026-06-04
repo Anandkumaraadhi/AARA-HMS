@@ -7,12 +7,10 @@ import {
     Receipt,
     BarChart3,
     Settings,
-    Building2,
     ChevronLeft,
     ChevronDown,
     ChevronRight,
     Bed,
-    Pill,
     FileText,
 } from "lucide-react";
 
@@ -21,8 +19,15 @@ import { NavLink } from "react-router-dom";
 export const menuItems = [
     {
         name: "Dashboard",
-        path: "/",
+        path: "/dashboard",
         icon: LayoutDashboard,
+    },
+
+
+    {
+        name: "Admissions",
+        path: "/admissions",
+        icon: Settings,
     },
 
     {
@@ -31,7 +36,6 @@ export const menuItems = [
         children: [
             { name: "Patients List", path: "/patients" },
             { name: "Patient Reports", path: "/patient-reports" },
-            { name: "Admissions", path: "/admissions" },
         ],
     },
 
@@ -71,14 +75,7 @@ export const menuItems = [
         ],
     },
 
-    {
-        name: "Pharmacy",
-        icon: Pill,
-        children: [
-            { name: "Medicines", path: "/medicines" },
-            { name: "Inventory", path: "/inventory" },
-        ],
-    },
+
 
     {
         name: "Ward Management",
@@ -88,11 +85,18 @@ export const menuItems = [
             { name: "Beds", path: "/beds" },
         ],
     },
-
     {
         name: "Reports",
         path: "/reports",
         icon: BarChart3,
+    },
+
+    {
+        name: "Department",
+        icon: Users,
+        children: [
+            { name: "Department Details", path: "/staff" },
+        ],
     },
 
     {
@@ -104,17 +108,17 @@ export const menuItems = [
         ],
     },
 
-    {
-        name: "Dental",
-        path: "/dental",
-        icon: Stethoscope,
-    },
+    // {
+    //     name: "Dental",
+    //     path: "/dental",
+    //     icon: Stethoscope,
+    // },
 
-    {
-        name: "Clinics",
-        path: "/clinics",
-        icon: Building2,
-    },
+    // {
+    //     name: "Clinics",
+    //     path: "/clinics",
+    //     icon: Building2,
+    // },
 
     {
         name: "Settings",
@@ -140,15 +144,13 @@ export default function Sidebar() {
 
     return (
         <div
-            className={`h-screen bg-[#1a222e] text-gray-300 flex flex-col transition-all duration-300 ${
-                collapsed ? "w-20" : "w-72"
-            }`}
+            className={`h-screen bg-[#1a222e] text-gray-300 flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-72"
+                }`}
         >
             {/* Logo */}
             <div
-                className={`p-4 border-b border-gray-700 flex items-center ${
-                    collapsed ? "justify-center" : "justify-start"
-                }`}
+                className={`p-4 border-b border-gray-700 flex items-center ${collapsed ? "justify-center" : "justify-start"
+                    }`}
             >
                 {!collapsed ? (
                     <img
@@ -181,11 +183,10 @@ export default function Sidebar() {
                                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-800 transition`}
                                     >
                                         <div
-                                            className={`flex items-center ${
-                                                collapsed
-                                                    ? "justify-center w-full"
-                                                    : "gap-3"
-                                            }`}
+                                            className={`flex items-center ${collapsed
+                                                ? "justify-center w-full"
+                                                : "gap-3"
+                                                }`}
                                         >
                                             <Icon size={18} />
 
@@ -220,10 +221,9 @@ export default function Sidebar() {
                                                         }: {
                                                             isActive: boolean;
                                                         }) =>
-                                                            `block px-3 py-2 rounded-md text-sm transition ${
-                                                                isActive
-                                                                    ? "bg-blue-600 text-white"
-                                                                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                                            `block px-3 py-2 rounded-md text-sm transition ${isActive
+                                                                ? "bg-blue-600 text-white"
+                                                                : "text-gray-400 hover:bg-gray-800 hover:text-white"
                                                             }`
                                                         }
                                                     >
@@ -243,14 +243,12 @@ export default function Sidebar() {
                                 key={item.name}
                                 to={item.path}
                                 className={({ isActive }) =>
-                                    `flex items-center ${
-                                        collapsed
-                                            ? "justify-center"
-                                            : "gap-3"
-                                    } px-3 py-2 rounded-lg transition-all duration-200 ${
-                                        isActive
-                                            ? "bg-blue-600 text-white"
-                                            : "hover:bg-gray-800 hover:text-white"
+                                    `flex items-center ${collapsed
+                                        ? "justify-center"
+                                        : "gap-3"
+                                    } px-3 py-2 rounded-lg transition-all duration-200 ${isActive
+                                        ? "bg-blue-600 text-white"
+                                        : "hover:bg-gray-800 hover:text-white"
                                     }`
                                 }
                             >
@@ -271,16 +269,14 @@ export default function Sidebar() {
             <div className="border-t border-gray-700 p-2">
                 <button
                     onClick={() => setCollapsed(!collapsed)}
-                    className={`w-full flex items-center ${
-                        collapsed
-                            ? "justify-center"
-                            : "justify-start gap-2"
-                    } px-3 py-2 rounded-md hover:bg-gray-800 transition`}
+                    className={`w-full flex items-center ${collapsed
+                        ? "justify-center"
+                        : "justify-start gap-2"
+                        } px-3 py-2 rounded-md hover:bg-gray-800 transition`}
                 >
                     <ChevronLeft
-                        className={`w-4 h-4 transition-transform ${
-                            collapsed ? "rotate-180" : ""
-                        }`}
+                        className={`w-4 h-4 transition-transform ${collapsed ? "rotate-180" : ""
+                            }`}
                     />
 
                     {!collapsed && (
